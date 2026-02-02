@@ -1,0 +1,53 @@
+name: Test Case
+description: Créer un cas de test pour une fonctionnalité
+title: "[TEST] "
+labels: ["test-case"]
+assignees: []
+
+body:
+  - type: input
+    id: feature
+    attributes:
+      label: Fonctionnalité testée
+      placeholder: Ex. Authentification utilisateur
+    validations:
+      required: true
+
+  - type: textarea
+    id: preconditions
+    attributes:
+      label: Préconditions
+      placeholder: Ex. Utilisateur connecté
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes du test
+      description: Décrire les étapes une par une
+      placeholder: |
+        1. Ouvrir la page de connexion
+        2. Saisir un email valide
+        3. Cliquer sur "Se connecter"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_result
+    attributes:
+      label: Résultat attendu
+      placeholder: Ex. Connexion réussie et redirection
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priorité du test
+      options:
+        - Haute
+        - Moyenne
+        - Basse
+    validations:
+      required: true
