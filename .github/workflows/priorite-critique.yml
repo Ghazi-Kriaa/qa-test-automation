@@ -2,16 +2,14 @@ name: "Alerte Priorité Critique v2"
 
 on:
   issues:
-    # On écoute quand un label est ajouté ou quand l'issue est créée avec un label
     types: [opened, labeled]
 
 jobs:
   gestion-priorite:
-    # IMPORTANT : Le workflow ne s'exécute QUE si le label est "Critical"
     if: github.event.label.name == 'Critical' || contains(github.event.issue.labels.*.name, 'Critical')
     runs-on: ubuntu-latest
     
-    # On donne les droits pour modifier l'Issue ET le Projet
+    # On s'assure que le workflow a TOUTES les permissions
     permissions:
       issues: write
       repository-projects: write
@@ -32,14 +30,14 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "🚨 **Alerte :** Ticket Critique détecté. Assignation faite et déplacement vers 'Todo' en cours..."
+              body: "🚨 **Alerte :** Ticket Critique détecté. Déplacement vers 'Todo'..."
             });
 
-      - name: 2. Déplacer vers la colonne Todo
+      - name: 2. Déplacer vers Todo
         uses: leonsteinhaeuser/project-beta-automations@v2.2.1
         with:
           gh_token: ${{ secrets.GITHUB_TOKEN }}
           user: Ghazi-Kriaa
           project_number: 4
           resource_node_id: ${{ github.event.issue.node_id }}
-          status_value: "Todo"
+          status_value: "Todo" # <--- VERIFIE BIEN CE NOM DANS TON TABLEAU
