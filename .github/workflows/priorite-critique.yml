@@ -1,5 +1,24 @@
-steps:
-      - name: 1. Assigner et Commenter (Ton code actuel)
+name: "Alerte Priorité Critique v2"
+
+on:
+  issues:
+    # On écoute quand un label est ajouté ou quand l'issue est créée avec un label
+    types: [opened, labeled]
+
+jobs:
+  gestion-priorite:
+    # IMPORTANT : Le workflow ne s'exécute QUE si le label est "Critical"
+    if: github.event.label.name == 'Critical' || contains(github.event.issue.labels.*.name, 'Critical')
+    runs-on: ubuntu-latest
+    
+    # On donne les droits pour modifier l'Issue ET le Projet
+    permissions:
+      issues: write
+      repository-projects: write
+      contents: read
+
+    steps:
+      - name: 1. Assigner et Commenter
         uses: actions/github-script@v7
         with:
           script: |
@@ -13,14 +32,14 @@ steps:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "🚨 **Alerte :** Ticket Critique détecté. Déplacement vers 'Todo'..."
+              body: "🚨 **Alerte :** Ticket Critique détecté. Assignation faite et déplacement vers 'Todo' en cours..."
             });
 
-      - name: 2. Deplacer vers Todo (Action Simplifiée)
+      - name: 2. Déplacer vers la colonne Todo
         uses: leonsteinhaeuser/project-beta-automations@v2.2.1
         with:
           gh_token: ${{ secrets.GITHUB_TOKEN }}
           user: Ghazi-Kriaa
           project_number: 4
           resource_node_id: ${{ github.event.issue.node_id }}
-          status_value: "Todo" # Doit correspondre exactement au nom de ta colonne
+          status_value: "Todo"
