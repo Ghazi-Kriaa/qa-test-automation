@@ -1,4 +1,4 @@
-name: "Alerte Priorité Critique v2"
+name: "Alerte Priorité Critique v3"
 
 on:
   issues:
@@ -9,35 +9,33 @@ jobs:
     if: github.event.label.name == 'Critical' || contains(github.event.issue.labels.*.name, 'Critical')
     runs-on: ubuntu-latest
     
-    # On s'assure que le workflow a TOUTES les permissions
     permissions:
       issues: write
       repository-projects: write
-      contents: read
 
     steps:
       - name: 1. Assigner et Commenter
         uses: actions/github-script@v7
         with:
           script: |
+            // Assigner l'utilisateur
             await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               assignees: [context.repo.owner]
             });
+            // Ajouter le commentaire 🚨
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "🚨 **Alerte :** Ticket Critique détecté. Déplacement vers 'Todo'..."
+              body: "🚨 **Alerte :** Ticket Critique détecté. Assignation effectuée."
             });
 
-      - name: 2. Déplacer vers Todo
-        uses: leonsteinhaeuser/project-beta-automations@v2.2.1
+      - name: 2. Forcer le mouvement vers Todo
+        uses: actions/add-to-project@v1.0.1
         with:
-          gh_token: ${{ secrets.GITHUB_TOKEN }}
-          user: Ghazi-Kriaa
-          project_number: 4
-          resource_node_id: ${{ github.event.issue.node_id }}
-          status_value: "Todo" # <--- VERIFIE BIEN CE NOM DANS TON TABLEAU
+          # Ton URL de projet exacte d'après tes captures
+          project-url: https://github.com/users/Ghazi-Kriaa/projects/4
+          github-token: ${{ secrets.GITHUB_TOKEN }}
