@@ -33,8 +33,9 @@ jobs:
               body: "🚨 **Alerte :** Ticket Critique détecté. Assignation faite. (Note: Si le mouvement échoue, vérifiez les accès au projet)."
             });
 
-      - name: 2. Ajouter au Projet et déplacer
+     - name: 2. Forcer le mouvement vers Todo
         uses: actions/add-to-project@v1.0.1
         with:
+          # Ton URL de projet exacte d'après tes captures
           project-url: https://github.com/users/Ghazi-Kriaa/projects/4
           github-token: ${{ secrets.GITHUB_TOKEN }}
