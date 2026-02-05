@@ -29,15 +29,14 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: "🚨 **Alerte Critique** : Issue assignée automatiquement et ajoutée au backlog."
+              body: "🚨 **Alerte Critique** : Issue assignée automatiquement."
             });
 
-      - name: 2. Déplacement vers la colonne Todo
+      - name: 2. Déplacement vers Todo (Project v2)
         uses: leonsteinhaeuser/project-beta-automations@v2.2.1
         with:
           gh_token: ${{ secrets.GITHUB_TOKEN }}
-          repository: qa-test-automation 
-          user: Ghazi-Kriaa
-          project_id: 20472089
+          organization: qa-test-automation   # ⚠️ METS LE NOM EXACT DE L’ORG
+          project_id: 20472089               # ID interne
           resource_node_id: ${{ github.event.issue.node_id }}
           status_value: "Todo"
