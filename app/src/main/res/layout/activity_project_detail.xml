@@ -1,0 +1,109 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/grid">
+
+
+    <!-- Contenu principal -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Project Details"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:layout_marginBottom="15dp"/>
+            <!-- CardView pour afficher les détails du projet -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Détails du projet -->
+                    <TextView
+                        android:id="@+id/projectDetailTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Project Title:"
+                        android:textStyle="bold"
+                        android:textSize="20sp"/>
+
+                    <TextView
+                        android:id="@+id/projectDetailDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Description:"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/projectDetailCreatedAt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Created At:"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/projectDetailOwnerId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Owner:"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/projectDetailMembers"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Members:"
+                        android:textSize="18sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center">
+
+                        <ImageButton
+                            android:id="@+id/buttonUpdateProject"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/edit"
+                            android:scaleType="centerInside"
+                            android:background="?android:attr/selectableItemBackground" />
+
+                        <ImageButton
+                            android:id="@+id/buttonDeleteProject"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/supp"
+                            android:scaleType="centerInside"
+                            android:background="?android:attr/selectableItemBackground"
+                            android:layout_marginStart="16dp"/> <!-- Espace entre les deux boutons -->
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
