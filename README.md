@@ -2,7 +2,7 @@
 TaskMate est une application Android pour faciliter la gestion de projets et de tâches. Elle permet aux utilisateurs de créer, de modifier et de supprimer des tâches, ainsi que de collaborer avec d'autres utilisateurs sur des projets communs.
 
 ## Description Générale
-TaskMate offre une plateforme centrale pour la gestion de projets, permettant aux utilisateurs de gérer leurs tâches, leurs projets et leurs collaborations de manière efficace. Les utilisateurs peuvent créer des tâches, les modifier et les supprimer, ainsi que attribuer des responsabilités et suivre les progrès.
+TaskMate offre une plateforme centrale pour la gestion de projets, permettant aux utilisateurs de gérer leurs tâches et leurs projets de manière efficace. Les utilisateurs peuvent créer des tâches, les modifier et les supprimer, ainsi que collaborer avec d'autres utilisateurs sur des projets communs.
 
 ## Fonctionnalités Principales
 * **Gestion de Projets** : Les utilisateurs peuvent créer, modifier et supprimer des projets.
@@ -15,11 +15,11 @@ TaskMate offre une plateforme centrale pour la gestion de projets, permettant au
 * **Kotlin** : Langage de programmation utilisé pour développer l'application.
 * **Android** : Plateforme utilisée pour développer l'application.
 * **Firebase** : Utilisé pour l'authentification et le stockage des données.
-* **Gradle** : Utilisé pour la gestion des dépendances et la construction de l'application.
-* **GitHub Actions** : Utilisé pour l'intégration continue et la livraison continue.
+* **Gradle** : Utilisé pour la gestion des dépendances et la compilation de l'application.
+* **GitHub Actions** : Utilisé pour la validation automatique des pull requests (fichier `.github/workflows/qa-validation.yml`)
 
 ## Guide d'Installation Rapide
-1. **Cloner le Répertoire** : Cloner le répertoire TaskMate sur votre machine locale.
+1. **Cloner le Repository** : Cloner le repository TaskMate sur votre machine locale.
 2. **Configurer Firebase** : Configurer Firebase pour l'authentification et le stockage des données.
 3. **Exécuter l'Application** : Exécuter l'application sur un appareil Android ou un émulateur.
 4. **Lancer l'Application** : Lancer l'application et commencer à utiliser TaskMate.
