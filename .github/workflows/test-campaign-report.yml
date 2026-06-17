@@ -1,0 +1,258 @@
+name: Test Campaign Report Advanced
+
+
+
+on:
+
+  workflow_dispatch:
+
+  milestone:
+
+    types: [closed]
+
+
+
+jobs:
+
+  generate-report:
+
+    runs-on: ubuntu-latest
+
+
+
+    permissions:
+
+      issues: write
+
+      contents: write
+
+
+
+    steps:
+
+      - name: Checkout repository
+
+        uses: actions/checkout@v4
+
+
+
+      - name: Generate Campaign Report
+
+        uses: actions/github-script@v7
+
+        with:
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          script: |
+
+            const owner = context.repo.owner;
+
+            const repo = context.repo.repo;
+
+
+
+            // Vérifier si workflow déclenché par milestone fermé
+
+            const milestone = context.payload.milestone;
+
+            let milestoneNumber = null;
+
+            let milestoneTitle = null;
+
+
+
+            if (milestone) {
+
+              milestoneNumber = milestone.number;
+
+              milestoneTitle = milestone.title;
+
+              console.log(`Workflow déclenché par milestone: ${milestoneTitle} (#${milestoneNumber})`);
+
+            } else {
+
+              console.log("Workflow déclenché manuellement (workflow_dispatch)");
+
+            }
+
+
+
+            // Récupérer toutes les issues associées
+
+            let issues = [];
+
+            if (milestoneNumber) {
+
+              // CORRECTION STRATÉGIQUE : Utilisation de listForRepo avec le milestoneNumber natif (integer) ou fallback listForRepo global state closed
+
+              // Pour éviter le bug de filtrage, on demande les issues fermées du repo et on filtre manuellement par numéro de milestone en JS. C'est 100% infaillible.
+
+              const allClosedIssues = await github.paginate(
+
+                github.rest.issues.listForRepo,
+
+                {
+
+                  owner,
+
+                  repo,
+
+                  state: "closed",
+
+                  per_page: 100
+
+                }
+
+              );
+
+              
+
+              // On filtre manuellement pour ne garder que celles du milestone actif
+
+              issues = allClosedIssues.filter(issue => issue.milestone && issue.milestone.number === milestoneNumber);
+
+            } else {
+
+              // Fallback manuel si workflow_dispatch
+
+              issues = await github.paginate(
+
+                github.rest.issues.listForRepo,
+
+                {
+
+                  owner,
+
+                  repo,
+
+                  state: "closed",
+
+                  per_page: 100
+
+                }
+
+              );
+
+            }
+
+
+
+            console.log(`Nombre d'issues détectées pour ce milestone: ${issues.length}`);
+
+
+
+            // Compter Passed / Failed
+
+            let passed = 0;
+
+            let failed = 0;
+
+            let passedIssues = [];
+
+            let failedIssues = [];
+
+
+
+            issues.forEach(issue => {
+
+              if (issue.pull_request) return;
+
+
+
+              if (!issue.labels) return;
+
+              const labels = issue.labels.map(l => {
+
+                return typeof l === 'string' ? l.toLowerCase() : (l.name ? l.name.toLowerCase() : '');
+
+              });
+
+
+
+              if (labels.includes("test-pass")) {
+
+                passed++;
+
+                passedIssues.push(`#${issue.number} ${issue.title}`);
+
+              }
+
+              if (labels.includes("test-fail")) {
+
+                failed++;
+
+                failedIssues.push(`#${issue.number} ${issue.title}`);
+
+              }
+
+            });
+
+
+
+            const total = passed + failed;
+
+            const successRate = total > 0 ? ((passed / total) * 100).toFixed(2) : 0;
+
+            const decision = successRate >= 80 ? "✅ Prêt pour production" : "❌ Non recommandé pour production";
+
+
+
+            const passedListText = passedIssues.length > 0 ? passedIssues.map(i => `  - ${i}`).join("\n") : "  _Aucun test passé_";
+
+            const failedListText = failedIssues.length > 0 ? failedIssues.map(i => `  - ${i}`).join("\n") : "  _Aucun test échoué_";
+
+
+
+            const report = `# 📊 Rapport de Campagne de Test ${milestoneTitle ? `- ${milestoneTitle}` : ''}
+
+
+
+              - ✅ **Tests Passed** : ${passed}
+
+              ${passedListText}
+
+              
+
+              - ❌ **Tests Failed** : ${failed}
+
+              ${failedListText}
+
+              
+
+              - 📦 **Total exécutés** : ${total}
+
+              - 🎯 **Taux de réussite** : ${successRate} %
+
+              - 📝 **Recommandation** : ${decision}
+
+              
+
+              ---
+
+
+
+            _Généré automatiquement par le système QA._`;
+
+
+
+            console.log(report);
+
+
+
+            // Créer une issue rapport
+
+            await github.rest.issues.create({
+
+              owner,
+
+              repo,
+
+              title: `📊 Rapport de Campagne de Test ${milestoneTitle ? `- ${milestoneTitle}` : ''}`,
+
+              body: report,
+
+              labels: ["health-check"]
+
+            }); 
+
