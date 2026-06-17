@@ -1,0 +1,90 @@
+name: Sync Milestone Issues Status
+
+
+
+on:
+
+  milestone:
+
+    types:
+
+      - closed
+
+      - opened
+
+
+
+permissions:
+
+  issues: write
+
+  pull-requests: write
+
+
+
+jobs:
+
+  sync-issues:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Sync Issues
+
+        uses: actions/github-script@v7
+
+        with:
+
+          script: |
+
+            const action = context.payload.action;
+
+            const milestoneNumber = context.payload.milestone.number;
+
+            const targetState = (action === 'closed') ? 'closed' : 'open';
+
+            
+
+            console.log(`Action: ${action} | Milestone: ${milestoneNumber}`);
+
+
+
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+
+              owner: context.repo.owner,
+
+              repo: context.repo.repo,
+
+              state: 'all' 
+
+            });
+
+
+
+            const milestoneIssues = issues.filter(i => i.milestone && i.milestone.number === milestoneNumber);
+
+
+
+            for (const issue of milestoneIssues) {
+
+              if (!issue.pull_request && issue.state !== targetState) {
+
+                await github.rest.issues.update({
+
+                  owner: context.repo.owner,
+
+                  repo: context.repo.repo,
+
+                  issue_number: issue.number,
+
+                  state: targetState
+
+                });
+
+                console.log(`✅ #${issue.number} -> ${targetState}`);
+
+              }
+
+            } 
+
