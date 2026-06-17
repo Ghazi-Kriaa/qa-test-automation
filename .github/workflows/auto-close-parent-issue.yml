@@ -1,0 +1,118 @@
+name: Auto Close Parent when Sub-issues Closed
+
+
+
+on:
+
+  issues:
+
+    types: [closed]
+
+
+
+jobs:
+
+  close-parent:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+
+      issues: write
+
+
+
+    steps:
+
+      - name: Sync Parent
+
+        uses: actions/github-script@v7
+
+        with:
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          script: |
+
+            const owner = context.repo.owner;
+
+            const repo = context.repo.repo;
+
+            const issueNumber = context.payload.issue.number;
+
+
+
+            const query = `
+
+              query($owner: String!, $repo: String!, $number: Int!) {
+
+                repository(owner: $owner, name: $repo) {
+
+                  issue(number: $number) {
+
+                    parent {
+
+                      number
+
+                      subIssues(first: 50) {
+
+                        nodes { state }
+
+                      }
+
+                    }
+
+                  }
+
+                }
+
+              }
+
+            `;
+
+
+
+            const data = await github.graphql(query, { owner, repo, number: issueNumber });
+
+            const parent = data.repository.issue.parent;
+
+
+
+            if (!parent) return;
+
+
+
+            const allSubIssuesClosed = parent.subIssues.nodes.every(sub => sub.state === 'CLOSED');
+
+
+
+            if (allSubIssuesClosed) {
+
+              // Fermer le parent
+
+              await github.rest.issues.update({
+
+                owner, repo,
+
+                issue_number: parent.number,
+
+                state: 'closed',
+
+                state_reason: 'completed'
+
+              });
+
+
+
+              await github.rest.issues.createComment({
+
+                owner, repo,
+
+                issue_number: parent.number,
+
+                body: "✅ Toutes les sous-tâches sont fermées. Fermeture automatique du parent."
+
+              });
+
+            } 
+
