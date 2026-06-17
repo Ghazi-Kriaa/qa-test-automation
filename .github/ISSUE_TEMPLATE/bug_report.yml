@@ -1,0 +1,122 @@
+name: Bug Report
+
+description: Signaler un bug détecté lors d'un test
+
+title: "[BUG] "
+
+labels: ["bug"]
+
+assignees: []
+
+
+
+body:
+
+  - type: textarea
+
+    id: ai_enrichment
+
+    attributes:
+
+      label: "✨ Génération Rapide par IA (Optionnel)"
+
+      description: "Décrivez le bug librement en langage naturel (ex: 'quand je clique sur déconnexion ça crash avec une erreur 500'). L'IA se chargera de structurer automatiquement les sections ci-dessous après soumission."
+
+      placeholder: "Écrivez votre description brute ici si vous souhaitez utiliser l'IA..."
+
+    validations:
+
+      required: false
+
+
+
+  - type: input
+
+    id: related_test
+
+    attributes:
+
+      label: Test Case associé
+
+      placeholder: Ex. #12
+
+    validations:
+
+      required: false # Mis à false pour ne pas bloquer la soumission rapide IA
+
+
+
+  - type: textarea
+
+    id: description
+
+    attributes:
+
+      label: Description du bug
+
+      placeholder: Décrire clairement le problème
+
+    validations:
+
+      required: false
+
+
+
+  - type: textarea
+
+    id: steps_to_reproduce
+
+    attributes:
+
+      label: Étapes pour reproduire le bug
+
+      placeholder: |
+
+        1. Se connecter
+
+        2. Cliquer sur "Profil"
+
+        3. Erreur affichée
+
+    validations:
+
+      required: false
+
+
+
+  - type: textarea
+
+    id: expected_behavior
+
+    attributes:
+
+      label: Comportement attendu
+
+      placeholder: Le profil doit s’afficher correctement
+
+    validations:
+
+      required: false
+
+
+
+  - type: dropdown
+
+    id: severity
+
+    attributes:
+
+      label: Sévérité
+
+      options:
+
+        - Critique
+
+        - Majeure
+
+        - Mineure
+
+    validations:
+
+      required: true 
+
