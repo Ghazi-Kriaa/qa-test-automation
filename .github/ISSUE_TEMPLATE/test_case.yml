@@ -1,0 +1,124 @@
+name: Test Case
+
+description: Créer un cas de test pour une fonctionnalité
+
+title: "[TEST] "
+
+labels: ["test-case"]
+
+assignees: []
+
+
+
+body:
+
+  - type: textarea
+
+    id: ai_enrichment
+
+    attributes:
+
+      label: "✨ Génération Rapide par IA (Optionnel)"
+
+      description: "Décrivez le scénario de test librement en langage naturel (ex: 'tester la connexion avec un email invalide pour voir le message d'erreur'). L'IA s'occupera de structurer le cas de test après soumission."
+
+      placeholder: "Écrivez votre scénario brut ici si vous souhaitez utiliser l'IA..."
+
+    validations:
+
+      required: false
+
+
+
+  - type: input
+
+    id: feature
+
+    attributes:
+
+      label: Fonctionnalité testée
+
+      placeholder: Ex. Authentification utilisateur
+
+    validations:
+
+      required: false
+
+
+
+  - type: textarea
+
+    id: preconditions
+
+    attributes:
+
+      label: Préconditions
+
+      placeholder: Ex. Utilisateur connecté
+
+    validations:
+
+      required: false
+
+
+
+  - type: textarea
+
+    id: steps
+
+    attributes:
+
+      label: Étapes du test
+
+      description: Décrire les étapes une par une
+
+      placeholder: |
+
+        1. Ouvrir la page de connexion
+
+        2. Saisir un email valide
+
+        3. Cliquer sur "Se connecter"
+
+    validations:
+
+      required: false
+
+
+
+  - type: textarea
+
+    id: expected_result
+
+    attributes:
+
+      label: Résultat attendu
+
+      placeholder: Ex. Connexion réussie et redirection
+
+    validations:
+
+      required: false
+
+
+
+  - type: dropdown
+
+    id: priority
+
+    attributes:
+
+      label: Priorité du test
+
+      options:
+
+        - Haute
+
+        - Moyenne
+
+        - Basse
+
+    validations:
+
+      required: true 
+
