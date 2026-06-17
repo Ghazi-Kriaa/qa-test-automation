@@ -1,0 +1,118 @@
+name: Block Close if sub-issues not completed
+
+
+
+on:
+
+  issues:
+
+    types: [closed] # Se déclenche quand on ferme l'issue
+
+
+
+jobs:
+
+  check-before-closing:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+
+      issues: write
+
+
+
+    steps:
+
+      - name: Verify sub-issues status
+
+        uses: actions/github-script@v7
+
+        with:
+
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+          script: |
+
+            const owner = context.repo.owner;
+
+            const repo = context.repo.repo;
+
+            const issueNumber = context.payload.issue.number;
+
+
+
+            const query = `
+
+              query($owner: String!, $repo: String!, $number: Int!) {
+
+                repository(owner: $owner, name: $repo) {
+
+                  issue(number: $number) {
+
+                    subIssues(first: 50) {
+
+                      nodes {
+
+                        number
+
+                        state # 'OPEN' ou 'CLOSED'
+
+                      }
+
+                    }
+
+                  }
+
+                }
+
+              }
+
+            `;
+
+
+
+            const result = await github.graphql(query, { owner, repo, number: issueNumber });
+
+            const subIssues = result.repository.issue.subIssues.nodes;
+
+
+
+            // On cherche les sub-issues qui sont encore 'OPEN'
+
+            const openSubIssues = subIssues.filter(sub => sub.state === 'OPEN');
+
+
+
+            if (openSubIssues.length > 0) {
+
+              // 1. Réouvrir l'issue
+
+              await github.rest.issues.update({
+
+                owner, repo,
+
+                issue_number: issueNumber,
+
+                state: 'open'
+
+              });
+
+
+
+              // 2. Commenter pour expliquer
+
+              const list = openSubIssues.map(s => `#${s.number}`).join(', ');
+
+              await github.rest.issues.createComment({
+
+                owner, repo,
+
+                issue_number: issueNumber,
+
+                body: `❌ **Fermeture refusée** : Les sous-tâches suivantes sont encore ouvertes : ${list}.`
+
+              });
+
+            } 
+
