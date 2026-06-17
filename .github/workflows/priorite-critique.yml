@@ -1,4 +1,4 @@
-name: Alerte Priorité Critique v2
+name: "Alerte Priorité Critique v2"
 
 on:
   issues:
